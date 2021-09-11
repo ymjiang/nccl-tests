@@ -236,6 +236,22 @@ static size_t wordSize(ncclDataType_t type) {
   }
 }
 
+static testResult_t getUniqueIdFromEnv(ncclUniqueId* id) {
+  char* env = getenv("NCCL_COMM_ID");
+  if (env) NCCLCHECK(ncclGetUniqueId(id));
+  return testSuccess;
+}
+
+static testResult_t getGlobalInfoFromEnv(int* size, int* rank) {
+  char* env1 = getenv("NCCL_GLOBAL_SIZE");
+  char* env2 = getenv("NCCL_GLOBAL_RANK");
+  if (env1 && env2) {
+    *size = atoi(env1);
+    *rank = atoi(env2);
+  } 
+  return testSuccess;
+}
+
 extern int test_ncclVersion; // init'd with ncclGetVersion()
 extern ncclDataType_t test_types[ncclNumTypes];
 extern const char *test_typenames[ncclNumTypes];

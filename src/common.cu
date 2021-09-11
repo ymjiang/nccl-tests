@@ -942,6 +942,8 @@ testResult_t run() {
     if (p == proc) break;
     if (hostHashs[p] == hostHashs[proc]) localRank++;
   }
+#else
+  TESTCHECK(getGlobalInfoFromEnv(&nProcs, &proc));
 #endif
   is_main_thread = (proc == 0) ? 1 : 0;
 
@@ -993,6 +995,8 @@ testResult_t run() {
   }
 #ifdef MPI_SUPPORT
   MPI_Bcast(&ncclId, sizeof(ncclId), MPI_BYTE, 0, MPI_COMM_WORLD);
+#else
+  TESTCHECK(getUniqueIdFromEnv(&ncclId));
 #endif
   cudaStream_t streams[nGpus*nThreads];
   void* sendbuffs[nGpus*nThreads];
